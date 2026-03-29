@@ -1,12 +1,17 @@
 package com.Maarten0162.ProgressPicBackend.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import java.util.Map;
+import java.util.UUID;
 import java.util.List;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+
 
 @Service
 public class CloudinaryService {
@@ -26,18 +31,33 @@ public class CloudinaryService {
                 .generate("2fe47cc7-e8fe-494d-aec6-a7d1271c61f9_nttqet");
     }
 
+    public Map uploadImage(UUID userUUID, MultipartFile file) throws Exception{
+
+        if (file.isEmpty()) throw new Exception("Image Does not exist");
+
+        // Convert MultipartFile to java.io.File
+        File tempFile = File.createTempFile("upload-", file.getOriginalFilename());
+        file.transferTo(tempFile);
+
+        try {
+            return cloudinary.uploader().upload(
+                tempFile,
+                Map.of("folder", userUUID.toString())
+            );
+        } catch (IOException e) {
+            throw new RuntimeException("Upload failed", e);
+        }
+    }
+
     public String[] GetAllImagesOfUser(String id) throws Exception {
-        // Get all images in the user's folder
+
         List<Map<String, String>> list = getImagesInFolder(id);
 
-        // Initialize a list to store the URLs
         List<String> urls = new ArrayList<>();
 
         for (Map<String, String> map : list) {
-            urls.add(map.get("url")); // get the secure URL
+            urls.add(map.get("url"));
         }
-
-        // Convert List<String> to String[]
         return urls.toArray(new String[0]);
     }
 
