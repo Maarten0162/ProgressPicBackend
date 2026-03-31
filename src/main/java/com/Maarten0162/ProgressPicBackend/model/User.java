@@ -13,6 +13,14 @@ import lombok.*;
 @Table(name = "users")
 public class User {
 
+    
+    public User(UUID uuid, String usn, String email, Instant createdAt) {
+        this.uuid = uuid;
+        this.username = usn;
+        this.email = email;
+        this.createdAt = createdAt;
+    }
+
     @Id
     @GeneratedValue
     @UuidGenerator

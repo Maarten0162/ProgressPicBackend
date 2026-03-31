@@ -25,7 +25,6 @@ public class Record {
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
-
     @Column(name = "front_image_url", columnDefinition = "text")
     private String frontImageUrl;
 
