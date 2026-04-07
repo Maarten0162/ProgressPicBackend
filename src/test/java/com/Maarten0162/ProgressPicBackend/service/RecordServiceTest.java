@@ -36,7 +36,7 @@ public class RecordServiceTest {
         Record record2 = new Record();
         List<Record> mockRecords = List.of(record1, record2);
 
-        when(repo.findByUserUUID(userId)).thenReturn(mockRecords);
+        when(repo.findByUserUUIDOrderByDateDesc(userId)).thenReturn(mockRecords);
 
         // Act
         List<Record> result = service.getAllImagesOfUser(userId);

@@ -1,6 +1,8 @@
 package com.Maarten0162.ProgressPicBackend.model;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import jakarta.persistence.*;
@@ -25,21 +27,12 @@ public class Record {
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
-    @Column(name = "front_image_url", columnDefinition = "text")
-    private String frontImageUrl;
+    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
 
-    @Column(name = "front_image_id", columnDefinition = "text")
-    private String frontImageId;
-
-    @Column(name = "side_image_url", columnDefinition = "text")
-    private String sideImageUrl;
-
-    @Column(name = "side_image_id", columnDefinition = "text")
-    private String sideImageId;
-
-    @Column(name = "back_image_url", columnDefinition = "text")
-    private String backImageUrl;
-
-    @Column(name = "back_image_id", columnDefinition = "text")
-    private String backImageId;
+    public void addImage(Image image) {
+        images.add(image);
+        image.setRecord(this);
+    }
+    
 }

@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface RecordRepo extends JpaRepository<Record, Long> {
-    List<Record> findByUserUUID(UUID userUUID);
+    List<Record> findByUserUUIDOrderByDateDesc(UUID userUUID);
 }
