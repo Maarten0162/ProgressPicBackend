@@ -29,5 +29,6 @@ public class Image {
 
     @Column(name = "image_id", columnDefinition = "text")
     private String imageId;
+
 }
 
