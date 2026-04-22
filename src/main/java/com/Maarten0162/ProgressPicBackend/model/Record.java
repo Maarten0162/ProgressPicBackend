@@ -17,7 +17,6 @@ public class Record {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Foreign key to users.uuid
     @Column(name = "useruuid", nullable = false)
     private UUID userUUID;
 
@@ -27,7 +26,7 @@ public class Record {
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
-    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
     public void addImage(Image image) {

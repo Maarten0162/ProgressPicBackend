@@ -1,5 +1,6 @@
 package com.Maarten0162.ProgressPicBackend.service;
 
+import java.io.Console;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,30 +16,30 @@ import com.Maarten0162.ProgressPicBackend.model.Record;
 
 import lombok.RequiredArgsConstructor;
 
-
 @Service
 @RequiredArgsConstructor
 public class RecordService {
     private final RecordRepo repo;
     private final CloudinaryService cloudinaryService;
 
-    public List<Record> getAllImagesOfUser(UUID userUUID){
+    public List<Record> getAllImagesOfUser(UUID userUUID) {
         return repo.findByUserUUIDOrderByDateDesc(userUUID);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Record createRecord(UUID userUUID, MultipartFile front, MultipartFile side, MultipartFile back) throws Exception{
+    public Record createRecord(UUID userUUID, MultipartFile front, MultipartFile side, MultipartFile back)
+            throws Exception {
 
         try {
             Record record = new Record();
             record.setUserUUID(userUUID);
-            if (!front.isEmpty()){
+            if (!front.isEmpty()) {
                 record.addImage(UploadImage(userUUID, front, ImageType.FRONT));
             }
-            if (!back.isEmpty()){
+            if (!back.isEmpty()) {
                 record.addImage(UploadImage(userUUID, back, ImageType.BACK));
             }
-            if (!side.isEmpty()){
+            if (!side.isEmpty()) {
                 record.addImage(UploadImage(userUUID, side, ImageType.SIDE));
             }
             return repo.save(record);
@@ -48,33 +49,37 @@ public class RecordService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Record updateRecord(Long id, UUID userUUID, MultipartFile front, MultipartFile side, MultipartFile back) throws Exception{
+    public Record updateRecord(Long id, UUID userUUID,
+            MultipartFile front,
+            MultipartFile side,
+            MultipartFile back) throws Exception {
 
-        try {
-            Record OGrecord = repo.findById(id).orElseThrow(() -> new RuntimeException("Record not found"));
+        Record record = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Record not found"));
 
-            //TODO needs some handeling for non replaced images so no duplicate uploads upon edit
+        record.setUserUUID(userUUID);
 
-            Record record = new Record();
-            record.setUserUUID(userUUID);
-            if (!front.isEmpty()){
-                record.addImage(UploadImage(userUUID, front, ImageType.FRONT));
-            }
-            if (!back.isEmpty()){
-                record.addImage(UploadImage(userUUID, back, ImageType.BACK));
-            }
-            if (!side.isEmpty()){
-                record.addImage(UploadImage(userUUID, side, ImageType.SIDE));
-            }
+        handleImageUpdate(record, front, ImageType.FRONT);
+        handleImageUpdate(record, side, ImageType.SIDE);
+        handleImageUpdate(record, back, ImageType.BACK);
 
-            OGrecord.setImages(record.getImages());
-            return repo.save(OGrecord);
-        } catch (Exception e) {
-            throw new Exception("An Error Occured: " + e);
-        }
+        return repo.save(record);
     }
 
-    private Image UploadImage(UUID userUUID, MultipartFile image, ImageType type) throws Exception{
+    private void handleImageUpdate(Record record, MultipartFile file, ImageType type) throws Exception {
+
+        if (file == null || file.isEmpty()) return;
+
+        // remove old image
+        record.getImages().removeIf(img -> img.getType() == type);
+
+        Image newImage = UploadImage(record.getUserUUID(), file, type);
+        newImage.setRecord(record);
+
+        record.getImages().add(newImage);
+    }
+
+    private Image UploadImage(UUID userUUID, MultipartFile image, ImageType type) throws Exception {
         Map result = cloudinaryService.uploadImage(userUUID, image);
         Image img = new Image();
         img.setImageId(result.get("public_id").toString());
