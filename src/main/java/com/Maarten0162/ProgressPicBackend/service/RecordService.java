@@ -70,9 +70,20 @@ public class RecordService {
 
         if (file == null || file.isEmpty()) return;
 
-        // remove old image
-        record.getImages().removeIf(img -> img.getType() == type);
+        // 1. find old images
+        List<Image> toRemove = record.getImages().stream()
+            .filter(img -> img.getType() == type)
+            .toList();
 
+        // 2. delete from Cloudinary
+        for (Image img : toRemove) {
+            cloudinaryService.deleteImageByPublicId(img.getImageId());
+        }
+
+        // 3. remove from record (triggers DB delete with orphanRemoval)
+        record.getImages().removeAll(toRemove);
+
+        // 4. upload new image
         Image newImage = UploadImage(record.getUserUUID(), file, type);
         newImage.setRecord(record);
 

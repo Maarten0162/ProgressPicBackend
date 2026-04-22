@@ -78,4 +78,9 @@ public class CloudinaryService {
         }
         return images;
     }
+
+    public void deleteImageByPublicId(String publicId) throws Exception {
+        Map result = cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+        System.out.println("Cloudinary delete result: " + result);
+    }
 }
