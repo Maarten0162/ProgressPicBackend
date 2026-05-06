@@ -1,14 +1,32 @@
-# 1. Provide the Java runtime environment
+# ==========================================
+# STAGE 1: The Builder (Compiling the code)
+# ==========================================
+# We start with an image that has Maven and Java 17 installed
+FROM maven:3.8.5-openjdk-17 AS builder
+
+# Set the working directory for the build process
+WORKDIR /build
+
+# Copy ALL your raw source code and pom.xml into the builder container
+COPY . .
+
+# Run Maven to compile the code and create the .jar file
+# We skip tests here to make the cloud deployment faster
+RUN mvn clean package -DskipTests
+
+# ==========================================
+# STAGE 2: The Runner (Running the app)
+# ==========================================
+# Now we start fresh with a tiny image that ONLY has Java (no Maven)
 FROM eclipse-temurin:17-jre-alpine
 
-# 2. Set the working directory inside the container
 WORKDIR /app
 
-# 3. Copy the compiled JAR file from your computer into the container
-COPY target/*.jar app.jar
+# We copy the finished .jar file FROM the "builder" stage above
+COPY --from=builder /build/target/*.jar app.jar
 
-# 4. Document the port Spring Boot uses
+# Expose port 8080 (Render looks for this to know how to route web traffic)
 EXPOSE 8080
 
-# 5. Define the command to run the application
+# Start the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
