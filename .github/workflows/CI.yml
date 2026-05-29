@@ -24,10 +24,15 @@ jobs:
           java-version: 21
           cache: maven
 
-      - name: Build (skip tests for now)
-        run: mvn clean verify -DskipTests
-      
-      - name: SonarCloud Scan
-        run: mvn -B sonar:sonar
+      - name: Build
+        run: mvn clean install -DskipTests
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_SECRET }}
+        with:
+          args: >
+            -Dsonar.projectKey=Maarten0162_ProgressPicBackend
+            -Dsonar.organization=maarten0162
+            -Dsonar.java.binaries=target/classes
