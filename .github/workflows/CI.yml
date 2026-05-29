@@ -24,7 +24,12 @@ jobs:
       - name: Build
         run: mvn clean install -DskipTests
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      name: SonarQube Scan
+      uses: SonarSource/sonarqube-scan-action@v6
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_SECRET }}
+      with:
+        args: > 
+          -Dsonar.projectKey=ProgressPicBackend
+          -Dsonar.organization=maarten0162
+          -Dsonar.java.binaries=target/classes
