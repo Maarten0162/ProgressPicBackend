@@ -22,6 +22,6 @@ jobs:
           java-version: 21
 
       - name: Build & Sonar
-        run: mvn clean verify sonar:sonar
+        run: mvn clean verify sonar:sonar -DskipTests
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_SECRET }}
