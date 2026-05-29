@@ -28,6 +28,9 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.organization>maarten0162</sonar.organization>
+		<sonar.projectKey>ProgressPicBackend</sonar.projectKey>
 	</properties>
 	<dependencies>
 		<dependency>
