@@ -25,7 +25,7 @@ public class ProgressPicBackendApplication {
                     int idx = line.indexOf('=');
                     String key = line.substring(0, idx).trim();
                     String value = line.substring(idx + 1).trim()
-                                       .replaceAll("^\"|\"$", ""); // strip quotes
+                                       .replaceAll("(^\")|(\"$)", "");
                     System.setProperty(key, value);
                 });
         } catch (IOException e) {
