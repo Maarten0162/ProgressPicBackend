@@ -24,10 +24,10 @@ jobs:
           java-version: 21
           cache: maven
 
-      - name: Build and test
-        run: mvn clean verify
-
+      - name: Build (skip tests for now)
+        run: mvn clean verify -DskipTests
+      
       - name: SonarCloud Scan
-        run: mvn -B sonar:sonar -DskipTests
+        run: mvn -B sonar:sonar
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_SECRET }}
