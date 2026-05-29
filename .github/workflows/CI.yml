@@ -28,6 +28,6 @@ jobs:
         run: mvn clean verify
 
       - name: SonarCloud Scan
-        run: mvn -B sonar:sonar
+        run: mvn -B sonar:sonar -DskipTests
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_SECRET }}
