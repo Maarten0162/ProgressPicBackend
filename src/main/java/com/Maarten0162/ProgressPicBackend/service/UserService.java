@@ -1,5 +1,7 @@
 package com.Maarten0162.ProgressPicBackend.service;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import com.Maarten0162.ProgressPicBackend.DAL.UserRepo;
@@ -21,5 +23,10 @@ public class UserService {
         } else {
         return repo.save(NewUser);
         }
+    }
+
+    public User getUserById(UUID uuid) {
+        return repo.findById(uuid)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

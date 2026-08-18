@@ -1,6 +1,5 @@
 package com.Maarten0162.ProgressPicBackend.service;
 
-import java.io.Console;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;

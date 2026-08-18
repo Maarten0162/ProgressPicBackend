@@ -27,7 +27,7 @@ public class CloudinaryService {
 
     public String GetImage() {
         return cloudinary.url()
-                .format("jpg") // optional: force format
+                .format("jpg") // force jpg
                 .generate("2fe47cc7-e8fe-494d-aec6-a7d1271c61f9_nttqet");
     }
 
