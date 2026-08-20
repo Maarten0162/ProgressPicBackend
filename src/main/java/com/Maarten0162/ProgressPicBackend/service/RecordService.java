@@ -36,7 +36,7 @@ public class RecordService {
                     LocalDate localDate = LocalDate.parse(dateString);
 
                     date = localDate.atStartOfDay(ZoneOffset.UTC).toInstant();
-
+                    
                 }
 
         try {
