@@ -36,11 +36,13 @@ public class RecordController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Record createRecord(
         @RequestParam("userUUID") UUID userUUID,
-        @RequestParam("front") MultipartFile front,
-        @RequestParam("side") MultipartFile side,
-        @RequestParam("back") MultipartFile back
+        @RequestParam(value = "front", required = false) MultipartFile front,
+        @RequestParam(value = "side", required = false) MultipartFile side,
+        @RequestParam(value = "back", required = false) MultipartFile back,
+        @RequestParam(value = "date", required = false) String dateString
         ) throws Exception {
-        return service.createRecord(userUUID, front, side, back);
+            
+        return service.createRecord(userUUID, front, side, back, dateString);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

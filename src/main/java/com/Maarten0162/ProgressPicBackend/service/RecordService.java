@@ -1,5 +1,8 @@
 package com.Maarten0162.ProgressPicBackend.service;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,21 +29,31 @@ public class RecordService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Record createRecord(UUID userUUID, MultipartFile front, MultipartFile side, MultipartFile back)
+    public Record createRecord(UUID userUUID, MultipartFile front, MultipartFile side, MultipartFile back, String dateString)
             throws Exception {
+                Instant date = Instant.now();
+                if(dateString != null && !dateString.isEmpty() && !dateString.isBlank()) {
+                    LocalDate localDate = LocalDate.parse(dateString);
+
+                    date = localDate.atStartOfDay(ZoneOffset.UTC).toInstant();
+
+                }
 
         try {
             Record record = new Record();
             record.setUserUUID(userUUID);
-            if (!front.isEmpty()) {
+            record.setDate(date);
+            if (front != null && !front.isEmpty()) {
                 record.addImage(UploadImage(userUUID, front, ImageType.FRONT));
             }
-            if (!back.isEmpty()) {
-                record.addImage(UploadImage(userUUID, back, ImageType.BACK));
-            }
-            if (!side.isEmpty()) {
+            if (side != null && !side.isEmpty()) {
                 record.addImage(UploadImage(userUUID, side, ImageType.SIDE));
             }
+            
+            if (back != null && !back.isEmpty()) {
+                record.addImage(UploadImage(userUUID, back, ImageType.BACK));
+            }
+            
             return repo.save(record);
         } catch (Exception e) {
             throw new Exception("An Error Occured: " + e);
