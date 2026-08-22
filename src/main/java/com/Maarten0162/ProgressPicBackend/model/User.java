@@ -15,10 +15,11 @@ import lombok.*;
 public class User {
 
     
-    public User(UUID uuid, String usn, String email, Instant createdAt) {
+    public User(UUID uuid, String email, String usn, String password, Instant createdAt) {
         this.uuid = uuid;
-        this.username = usn;
         this.email = email;
+        this.username = usn;
+        this.password = password;
         this.createdAt = createdAt;
     }
 
@@ -28,9 +29,11 @@ public class User {
     @Column(nullable = false, updatable = false)
     private UUID uuid;
     
+    private String email;
+
     private String username;
 
-    private String email;
+    private String password;
 
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();;

@@ -16,6 +16,7 @@ public class PostController {
     public PostController(PostService Service){
         this.service = Service;
     }
+    
     @PostMapping("/create")
     public Post createPost( @RequestBody PostDTO post ) throws Exception{
             return service.createPost(post);
