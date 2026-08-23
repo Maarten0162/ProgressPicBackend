@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import com.Maarten0162.ProgressPicBackend.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -30,4 +31,14 @@ public class JWTService {
                 .signWith(key)
                 .compact(); // maakt er 1 string van
     }
+
+    public String extractUserUUID(String token) {
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+    }
+    
 }
