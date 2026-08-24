@@ -30,4 +30,5 @@ public class WebSocketConfig
         // Berichten van backend naar clients
         registry.enableSimpleBroker("/topic", "/queue");
     }
+    
 }
